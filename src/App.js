@@ -49,9 +49,8 @@ const Navbar = ({ activeTab, setActiveTab }) => {
         <div style={navStyles.logo} onClick={() => setActiveTab('home')}>
         <img 
         src="favicon.ico" 
-        alt="Styled"
         style={{ width: '50px', height: 'auto', borderRadius: '10px' }}
-      />  NiteSea
+      />  NiteSe
         </div>
         <ul style={navStyles.navLinks}>
           {['home', 'about', 'contact'].map((tab) => (
