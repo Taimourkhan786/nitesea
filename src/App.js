@@ -49,7 +49,7 @@ const Navbar = ({ activeTab, setActiveTab }) => {
         <div style={navStyles.logo} onClick={() => setActiveTab('home')}>
         <img 
         src="favicon.ico" 
-        alt="Styled image"
+        alt="Styled"
         style={{ width: '50px', height: 'auto', borderRadius: '10px' }}
       />  NiteSea
         </div>
