@@ -3,46 +3,137 @@
 
 <head>
   <meta charset="utf-8" />
-    <title>NiteSea | Online Shopping Store</title>
-  <meta name="description" content="Shop premium products at NiteSea with fast delivery and secure checkout." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- ⭐ TITLE - Make it descriptive -->
+  <title>NiteSea - Free Online Image Resizer Tool</title>
+  
+  <!-- ⭐ DESCRIPTION - Important for SEO -->
+  <meta name="description" content="Resize your images instantly with NiteSea's free online image resizer. Fast, secure, and privacy-focused. No uploads required." />
+  
+  <!-- ⭐ KEYWORDS - Helps with search -->
+  <meta name="keywords" content="image resizer, resize images, free image tool, online image resizer, NiteSea" />
+  
+  <!-- ⭐ ROBOTS - Allow indexing -->
+  <meta name="robots" content="index, follow" />
+  <meta name="googlebot" content="index, follow" />
+  
+  <!-- ⭐ CANONICAL URL - Prevents duplicate content issues -->
+  <link rel="canonical" href="https://nitesea.com/" />
 
+  <!-- ⭐ FAVICON -->
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-  <meta property="og:title" content="NiteSea | Online Shopping Store" />
-  <meta property="og:description" content="Shop premium products at NiteSea with fast delivery and secure checkout." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://nitesea.com" />
-  <meta property="og:image" content="https://nitesea.com/favicon.ico" />
-  <meta name="google-site-verification" content="E_3U3Wdm8CE7X-HpYohykLV_XlscxllEmXG2Z5o5ewg" />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon.ico" />
-  <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  
+  <!-- ⭐ MANIFEST -->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+  
+  <!-- ⭐ SITEMAP -->
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-  <title>NiteSea</title>
+  <!-- ⭐ OPEN GRAPH (Facebook, LinkedIn, etc.) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://nitesea.com/" />
+  <meta property="og:title" content="NiteSea - Free Online Image Resizer" />
+  <meta property="og:description" content="Resize your images instantly with our free online tool. Fast, secure, and privacy-focused." />
+  <meta property="og:image" content="https://nitesea.com/logo512.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:site_name" content="NiteSea" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- ⭐ TWITTER CARD -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://nitesea.com/" />
+  <meta name="twitter:title" content="NiteSea - Free Online Image Resizer" />
+  <meta name="twitter:description" content="Resize your images instantly with our free online tool. Fast, secure, and privacy-focused." />
+  <meta name="twitter:image" content="https://nitesea.com/logo512.png" />
+  <meta name="twitter:site" content="@nitesea" />
+
+  <!-- ⭐ GOOGLE SEARCH CONSOLE VERIFICATION -->
+  <meta name="google-site-verification" content="E_3U3Wdm8CE7X-HpYohykLV_XlscxllEmXG2Z5o5ewg" />
+
+  <!-- ⭐ STRUCTURED DATA (CRITICAL for Google Logo) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "NiteSea",
+      "url": "https://nitesea.com",
+      "logo": "https://nitesea.com/logo512.png",
+      "image": "https://nitesea.com/logo512.png",
+      "description": "Free online image resizer tool. Resize images instantly without uploading to servers.",
+      "sameAs": [
+        "https://twitter.com/nitesea",
+        "https://facebook.com/nitesea"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+1-555-123-4567",
+        "contactType": "customer service",
+        "availableLanguage": ["English"]
+      }
+    }
+  </script>
+
+  <!-- ⭐ WEBSITE STRUCTURED DATA -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://nitesea.com",
+      "name": "NiteSea",
+      "description": "Free online image resizer tool.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "NiteSea",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://nitesea.com/logo512.png"
+        }
+      }
+    }
+  </script>
+
+  <!-- ⭐ WEB APPLICATION STRUCTURED DATA -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "NiteSea Image Resizer",
+      "url": "https://nitesea.com",
+      "description": "Free online image resizer tool. Resize images instantly without uploading to servers.",
+      "applicationCategory": "Multimedia",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "image": "https://nitesea.com/logo512.png"
+    }
+  </script>
+
+  <!-- ⭐ BREADCRUMB STRUCTURED DATA -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://nitesea.com/"
+        }
+      ]
+    }
+  </script>
 </head>
 
 <body>
   <div id="root"></div>
-  <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
 </body>
 
 </html>
