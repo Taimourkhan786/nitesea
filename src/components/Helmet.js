@@ -1,135 +1,86 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-const Helmet = ({ 
-  title, 
-  description, 
-  url, 
-  image, 
-  keywords, 
-  type, 
-  siteName 
-}) => {
+const Helmet = ({ title, description, url, image }) => {
   useEffect(() => {
-    const defaultTitle = 'NiteSea - Free Online Image Resizer';
-    const defaultDesc = 'Resize your images instantly with NiteSea.';
-    const defaultUrl = 'https://nitesea.com/';
-    const defaultImage = 'https://nitesea.com/logo512.png';
-    const defaultKeywords = 'image resizer, resize images, free image tool, online image resizer, NiteSea';
-    const defaultType = 'website';
-    const defaultSiteName = 'NiteSea';
+    // -------------------------
+    // TITLE
+    // -------------------------
+    document.title = title || "NiteSea";
 
-    // Update Title
-    document.title = title || defaultTitle;
+    // -------------------------
+    // META HELPER (for meta tags only)
+    // -------------------------
+    const upsertMeta = (selector, attr, value) => {
+      let el = document.querySelector(selector);
 
-    // Update Meta Description
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.name = 'description';
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.content = description || defaultDesc;
+      if (!el) {
+        el = document.createElement("meta");
+        document.head.appendChild(el);
+      }
 
-    // Update Meta Keywords
-    let metaKeywords = document.querySelector('meta[name="keywords"]');
-    if (!metaKeywords) {
-      metaKeywords = document.createElement('meta');
-      metaKeywords.name = 'keywords';
-      document.head.appendChild(metaKeywords);
-    }
-    metaKeywords.content = keywords || defaultKeywords;
+      el.setAttribute(attr, value);
+    };
 
-    // Update Canonical URL
+    // -------------------------
+    // BASIC SEO TAGS
+    // -------------------------
+    upsertMeta('meta[name="description"]', "content", description || "");
+    upsertMeta('meta[name="robots"]', "content", "index, follow");
+
+    // -------------------------
+    // CANONICAL (FIXED PROPERLY)
+    // -------------------------
     let canonical = document.querySelector('link[rel="canonical"]');
+
     if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.rel = 'canonical';
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
       document.head.appendChild(canonical);
     }
-    canonical.href = url || defaultUrl;
+    canonical.setAttribute("href", url || window.location.href);
 
-    // Update OG Title
-    let ogTitle = document.querySelector('meta[property="og:title"]');
-    if (!ogTitle) {
-      ogTitle = document.createElement('meta');
-      ogTitle.setAttribute('property', 'og:title');
-      document.head.appendChild(ogTitle);
-    }
-    ogTitle.content = title || defaultTitle;
+    // -------------------------
+    // OPEN GRAPH (Facebook / WhatsApp)
+    // -------------------------
+    upsertMeta('meta[property="og:title"]', "content", title || "");
+    upsertMeta('meta[property="og:description"]', "content", description || "");
+    upsertMeta('meta[property="og:url"]', "content", url || window.location.href);
+    upsertMeta('meta[property="og:image"]', "content", image || "");
+    upsertMeta('meta[property="og:type"]', "content", "website");
+    upsertMeta('meta[property="og:site_name"]', "content", "NiteSea");
 
-    // Update OG Description
-    let ogDesc = document.querySelector('meta[property="og:description"]');
-    if (!ogDesc) {
-      ogDesc = document.createElement('meta');
-      ogDesc.setAttribute('property', 'og:description');
-      document.head.appendChild(ogDesc);
-    }
-    ogDesc.content = description || defaultDesc;
+    // -------------------------
+    // TWITTER CARD
+    // -------------------------
+    upsertMeta('meta[name="twitter:title"]', "content", title || "");
+    upsertMeta('meta[name="twitter:description"]', "content", description || "");
+    upsertMeta('meta[name="twitter:image"]', "content", image || "");
+    upsertMeta('meta[name="twitter:card"]', "content", "summary_large_image");
 
-    // Update OG URL
-    let ogUrl = document.querySelector('meta[property="og:url"]');
-    if (!ogUrl) {
-      ogUrl = document.createElement('meta');
-      ogUrl.setAttribute('property', 'og:url');
-      document.head.appendChild(ogUrl);
-    }
-    ogUrl.content = url || defaultUrl;
+    // -------------------------
+    // STRUCTURED DATA (VERY IMPORTANT FOR SITELINKS)
+    // -------------------------
+    const oldSchema = document.getElementById("website-schema");
+    if (oldSchema) oldSchema.remove();
 
-    // Update OG Image
-    let ogImage = document.querySelector('meta[property="og:image"]');
-    if (!ogImage) {
-      ogImage = document.createElement('meta');
-      ogImage.setAttribute('property', 'og:image');
-      document.head.appendChild(ogImage);
-    }
-    ogImage.content = image || defaultImage;
+    const schema = document.createElement("script");
+    schema.type = "application/ld+json";
+    schema.id = "website-schema";
 
-    // Update OG Type
-    let ogType = document.querySelector('meta[property="og:type"]');
-    if (!ogType) {
-      ogType = document.createElement('meta');
-      ogType.setAttribute('property', 'og:type');
-      document.head.appendChild(ogType);
-    }
-    ogType.content = type || defaultType;
+    schema.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "NiteSea",
+      url: url || window.location.origin,
+      potentialAction: {
+        "@type": "SearchAction",
+        target: `${window.location.origin}/?q={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
+    });
 
-    // Update OG Site Name
-    let ogSite = document.querySelector('meta[property="og:site_name"]');
-    if (!ogSite) {
-      ogSite = document.createElement('meta');
-      ogSite.setAttribute('property', 'og:site_name');
-      document.head.appendChild(ogSite);
-    }
-    ogSite.content = siteName || defaultSiteName;
-
-    // Update Twitter Title
-    let twTitle = document.querySelector('meta[name="twitter:title"]');
-    if (!twTitle) {
-      twTitle = document.createElement('meta');
-      twTitle.name = 'twitter:title';
-      document.head.appendChild(twTitle);
-    }
-    twTitle.content = title || defaultTitle;
-
-    // Update Twitter Description
-    let twDesc = document.querySelector('meta[name="twitter:description"]');
-    if (!twDesc) {
-      twDesc = document.createElement('meta');
-      twDesc.name = 'twitter:description';
-      document.head.appendChild(twDesc);
-    }
-    twDesc.content = description || defaultDesc;
-
-    // Update Twitter Image
-    let twImage = document.querySelector('meta[name="twitter:image"]');
-    if (!twImage) {
-      twImage = document.createElement('meta');
-      twImage.name = 'twitter:image';
-      document.head.appendChild(twImage);
-    }
-    twImage.content = image || defaultImage;
-
-  }, [title, description, url, image, keywords, type, siteName]);
+    document.head.appendChild(schema);
+  }, [title, description, url, image]);
 
   return null;
 };
