@@ -4,7 +4,7 @@ Allow: /
 
 # Allow Google to crawl images
 User-agent: Googlebot-Image
-Allow: /logo512.png
+Allow: /
 
 # Sitemap
 Sitemap: https://nitesea.com/sitemap.xml

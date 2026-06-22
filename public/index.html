@@ -1,59 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   
-  <!-- ⭐ TITLE - Make it descriptive -->
+  <!-- ⭐ FAVICON - Shows in browser tab -->
+  <link rel="icon" href="favicon.png" />
+  <!-- Or use PNG version -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+  
+  <!-- TITLE -->
   <title>NiteSea - Free Online Image Resizer Tool</title>
   
-  <!-- ⭐ DESCRIPTION - Important for SEO -->
+  <!-- DESCRIPTION -->
   <meta name="description" content="Resize your images instantly with NiteSea's free online image resizer. Fast, secure, and privacy-focused. No uploads required." />
   
-  <!-- ⭐ KEYWORDS - Helps with search -->
-  <meta name="keywords" content="image resizer, resize images, free image tool, online image resizer, NiteSea" />
-  
-  <!-- ⭐ ROBOTS - Allow indexing -->
+  <!-- KEYWORDS -->
+  <meta name="keywords" content="image resizer, resize images, free image tool, online image resizer, NiteSea" />  
+  <!-- ROBOTS -->
   <meta name="robots" content="index, follow" />
   <meta name="googlebot" content="index, follow" />
   
-  <!-- ⭐ CANONICAL URL - Prevents duplicate content issues -->
+  <!-- CANONICAL URL -->
   <link rel="canonical" href="https://nitesea.com/" />
 
-  <!-- ⭐ FAVICON -->
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-  
-  <!-- ⭐ MANIFEST -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  
-  <!-- ⭐ SITEMAP -->
-  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
-
-  <!-- ⭐ OPEN GRAPH (Facebook, LinkedIn, etc.) -->
+  <!-- OPEN GRAPH -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://nitesea.com/" />
   <meta property="og:title" content="NiteSea - Free Online Image Resizer" />
   <meta property="og:description" content="Resize your images instantly with our free online tool. Fast, secure, and privacy-focused." />
   <meta property="og:image" content="https://nitesea.com/logo512.png" />
-  <meta property="og:image:width" content="512" />
-  <meta property="og:image:height" content="512" />
   <meta property="og:site_name" content="NiteSea" />
   <meta property="og:locale" content="en_US" />
 
-  <!-- ⭐ TWITTER CARD -->
+  <!-- TWITTER CARD -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:url" content="https://nitesea.com/" />
   <meta name="twitter:title" content="NiteSea - Free Online Image Resizer" />
   <meta name="twitter:description" content="Resize your images instantly with our free online tool. Fast, secure, and privacy-focused." />
-  <meta name="twitter:image" content="https://nitesea.com/logo512.png" />
   <meta name="twitter:site" content="@nitesea" />
 
-  <!-- ⭐ GOOGLE SEARCH CONSOLE VERIFICATION -->
-  <meta name="google-site-verification" content="E_3U3Wdm8CE7X-HpYohykLV_XlscxllEmXG2Z5o5ewg" />
-
-  <!-- ⭐ STRUCTURED DATA (CRITICAL for Google Logo) -->
+  <!-- STRUCTURED DATA -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -61,41 +48,10 @@
       "name": "NiteSea",
       "url": "https://nitesea.com",
       "logo": "https://nitesea.com/logo512.png",
-      "image": "https://nitesea.com/logo512.png",
-      "description": "Free online image resizer tool. Resize images instantly without uploading to servers.",
-      "sameAs": [
-        "https://twitter.com/nitesea",
-        "https://facebook.com/nitesea"
-      ],
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+1-555-123-4567",
-        "contactType": "customer service",
-        "availableLanguage": ["English"]
-      }
+      "description": "Free online image resizer tool. Resize images instantly without uploading to servers."
     }
   </script>
 
-  <!-- ⭐ WEBSITE STRUCTURED DATA -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "url": "https://nitesea.com",
-      "name": "NiteSea",
-      "description": "Free online image resizer tool.",
-      "publisher": {
-        "@type": "Organization",
-        "name": "NiteSea",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://nitesea.com/logo512.png"
-        }
-      }
-    }
-  </script>
-
-  <!-- ⭐ WEB APPLICATION STRUCTURED DATA -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -110,30 +66,100 @@
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "USD"
-      },
-      "image": "https://nitesea.com/logo512.png"
+      }
     }
   </script>
 
-  <!-- ⭐ BREADCRUMB STRUCTURED DATA -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://nitesea.com/"
-        }
-      ]
+  <!-- React from CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <style>
+    /* Reset & base */
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
     }
-  </script>
+    
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      background: #f5f7fa; 
+      min-height: 100vh;
+    }
+    
+    #root { 
+      min-height: 100vh; 
+    }
+    
+    input[type="file"] { 
+      display: block; 
+      margin: 0 auto; 
+      padding: 0.5rem; 
+      background: white; 
+      border-radius: 30px; 
+      border: 1px solid #ddd; 
+      cursor: pointer; 
+      width: 100%;
+      max-width: 300px;
+    }
+    
+    img { 
+      max-width: 100%; 
+      height: auto; 
+    }
+    
+    input[type="range"] { 
+      accent-color: #00d9ff; 
+    }
+    
+    button { 
+      transition: all 0.2s ease; 
+      cursor: pointer; 
+      touch-action: manipulation;
+    }
+    
+    button:hover { 
+      transform: scale(1.02); 
+      opacity: 0.9; 
+    }
+    
+    button:disabled { 
+      opacity: 0.5; 
+      transform: none; 
+      cursor: not-allowed; 
+    }
+    
+    @media (max-width: 600px) {
+      .nav-links { 
+        gap: 0.3rem !important; 
+      }
+      .nav-link { 
+        padding: 0.3rem 0.6rem !important; 
+        font-size: 0.85rem !important; 
+      }
+      .upload-area { 
+        padding: 1.5rem 1rem !important; 
+      }
+      .controls { 
+        gap: 0.5rem !important; 
+      }
+      .input-group { 
+        padding: 0.3rem 0.6rem !important; 
+        flex-wrap: wrap; 
+        font-size: 0.9rem; 
+      }
+      .input-group input[type="number"] { 
+        width: 60px !important; 
+      }
+      .container-padding {
+        padding: 1rem !important;
+      }
+    }
+  </style>
 </head>
-
 <body>
   <div id="root"></div>
+  
 </body>
-
 </html>
