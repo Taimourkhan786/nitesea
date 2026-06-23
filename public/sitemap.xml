@@ -18,7 +18,7 @@
     
     <!-- ⭐ Social media preview image -->
     <image:image>
-      <image:loc>https://nitesea.com/og-image.png</image:loc>
+      <image:loc>https://nitesea.com/logo512.png</image:loc>
       <image:title>NiteSea Social Preview</image:title>
     </image:image>
   </url>
