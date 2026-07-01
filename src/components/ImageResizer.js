@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
 const ImageResizer = () => {
   const [originalImage, setOriginalImage] = useState(null);
@@ -16,6 +16,42 @@ const ImageResizer = () => {
 
   const MAX_FREE_RESIZES = 10;
   const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
+
+  // Update time remaining display
+  const updateTimeRemaining = useCallback((milliseconds) => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    
+    if (minutes > 0) {
+      setTimeRemaining(`${minutes}m ${seconds}s`);
+    } else {
+      setTimeRemaining(`${seconds}s`);
+    }
+  }, []);
+
+  // Check if reset interval has passed and reset if needed
+  const checkAndResetIfNeeded = useCallback((count, lastDate) => {
+    if (count < MAX_FREE_RESIZES) {
+      // Don't show timer if under limit
+      setTimeRemaining('');
+      return;
+    }
+
+    const now = new Date();
+    const timeDiff = now.getTime() - lastDate.getTime();
+
+    if (timeDiff >= RESET_INTERVAL) {
+      setResizeCount(0);
+      localStorage.setItem("resizeCount", "0");
+      setTimeRemaining('');
+      setLastResetDate(null);
+      localStorage.removeItem("lastResetDate");
+    } else {
+      const remaining = RESET_INTERVAL - timeDiff;
+      updateTimeRemaining(remaining);
+    }
+  }, [RESET_INTERVAL, MAX_FREE_RESIZES, updateTimeRemaining]);
 
   // Load resize data from localStorage
   const loadResizeData = useCallback(() => {
@@ -46,43 +82,7 @@ const ImageResizer = () => {
       localStorage.setItem("resizeCount", "0");
       setResizeCount(0);
     }
-  }, []);
-
-  // Check if reset interval has passed and reset if needed
-  const checkAndResetIfNeeded = useCallback((count, lastDate) => {
-    if (count < MAX_FREE_RESIZES) {
-      // Don't show timer if under limit
-      setTimeRemaining('');
-      return;
-    }
-
-    const now = new Date();
-    const timeDiff = now.getTime() - lastDate.getTime();
-
-    if (timeDiff >= RESET_INTERVAL) {
-      setResizeCount(0);
-      localStorage.setItem("resizeCount", "0");
-      setTimeRemaining('');
-      setLastResetDate(null);
-      localStorage.removeItem("lastResetDate");
-    } else {
-      const remaining = RESET_INTERVAL - timeDiff;
-      updateTimeRemaining(remaining);
-    }
-  }, [RESET_INTERVAL, MAX_FREE_RESIZES]);
-
-  // Update time remaining display
-  const updateTimeRemaining = (milliseconds) => {
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    
-    if (minutes > 0) {
-      setTimeRemaining(`${minutes}m ${seconds}s`);
-    } else {
-      setTimeRemaining(`${seconds}s`);
-    }
-  };
+  }, [checkAndResetIfNeeded]);
 
   // Check login status and load data
   useEffect(() => {
@@ -126,7 +126,7 @@ const ImageResizer = () => {
         clearInterval(timer);
       }
     };
-  }, [isLoggedIn, lastResetDate, resizeCount, RESET_INTERVAL, MAX_FREE_RESIZES]);
+  }, [isLoggedIn, lastResetDate, resizeCount, RESET_INTERVAL, MAX_FREE_RESIZES, updateTimeRemaining]);
 
   const checkResizeLimit = useCallback(() => {
     if (!isLoggedIn) {
@@ -229,7 +229,8 @@ const ImageResizer = () => {
     alert(`🚀 Upgrading to ${plan} plan! Redirecting to payment...`);
   }, []);
 
-  const styles = {
+  // Wrap styles in useMemo to prevent re-creation on every render
+  const styles = useMemo(() => ({
     container: {
       maxWidth: '1200px',
       margin: '0 auto',
@@ -622,7 +623,7 @@ const ImageResizer = () => {
       borderRadius: '20px',
       border: '1px solid rgba(0, 217, 255, 0.1)'
     }
-  };
+  }), []); // Empty dependency array since styles don't change
 
   // Render Upgrade Modal
   const renderUpgradeModal = useCallback(() => {
