@@ -20,7 +20,7 @@ import { getFirestore, doc, setDoc, getDoc, updateDoc } from "firebase/firestore
 
 const firebaseConfig = {
   apiKey: "AIzaSyACbVcn5nQEZXcJ3g1qWWgm_3HvzWDN9cg",
-  authDomain: "nitesea.com",
+  authDomain: "nitesea-85b9a.firebaseapp.com",
   projectId: "nitesea-85b9a",
   storageBucket: "nitesea-85b9a.firebasestorage.app",
   messagingSenderId: "226363392823",
