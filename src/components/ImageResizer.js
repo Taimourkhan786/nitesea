@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 const ImageResizer = () => {
   const [originalImage, setOriginalImage] = useState(null);
@@ -10,37 +10,34 @@ const ImageResizer = () => {
   const [quality, setQuality] = useState(0.9);
   const [resizeCount, setResizeCount] = useState(0);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState('');
   const [lastResetDate, setLastResetDate] = useState(null);
-  const [canReset, setCanReset] = useState(false);
-  const [showLimitMessage, setShowLimitMessage] = useState(false);
 
   const MAX_FREE_RESIZES = 10;
-  // Set to 60 seconds (1 minute)
-const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
-  // Check login status and load data
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      setIsLoggedIn(true);
-      loadResizeData();
-    }
-  }, []);
+  const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
 
   // Load resize data from localStorage
-  const loadResizeData = () => {
+  const loadResizeData = useCallback(() => {
     const savedCount = localStorage.getItem("resizeCount");
     const savedDate = localStorage.getItem("lastResetDate");
     
     if (savedCount) {
-      setResizeCount(parseInt(savedCount));
-    }
-    
-    if (savedDate) {
-      setLastResetDate(new Date(parseInt(savedDate)));
-      checkAndResetIfNeeded(parseInt(savedCount), new Date(parseInt(savedDate)));
+      const count = parseInt(savedCount, 10);
+      setResizeCount(count);
+      
+      if (savedDate) {
+        const date = new Date(parseInt(savedDate, 10));
+        setLastResetDate(date);
+        checkAndResetIfNeeded(count, date);
+      } else {
+        // First time user or missing date
+        const now = new Date();
+        setLastResetDate(now);
+        localStorage.setItem("lastResetDate", now.getTime().toString());
+        localStorage.setItem("resizeCount", "0");
+        setResizeCount(0);
+      }
     } else {
       // First time user
       const now = new Date();
@@ -49,27 +46,30 @@ const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
       localStorage.setItem("resizeCount", "0");
       setResizeCount(0);
     }
-  };
+  }, []);
 
   // Check if reset interval has passed and reset if needed
- const checkAndResetIfNeeded = (count, lastDate) => {
-  if (count < MAX_FREE_RESIZES) return; // don't start timer before limit
+  const checkAndResetIfNeeded = useCallback((count, lastDate) => {
+    if (count < MAX_FREE_RESIZES) {
+      // Don't show timer if under limit
+      setTimeRemaining('');
+      return;
+    }
 
-  const now = new Date();
-  const timeDiff = now.getTime() - lastDate.getTime();
+    const now = new Date();
+    const timeDiff = now.getTime() - lastDate.getTime();
 
-  if (timeDiff >= RESET_INTERVAL) {
-    setResizeCount(0);
-    localStorage.setItem("resizeCount", "0");
-    setShowLimitMessage(false);
-    setTimeRemaining('');
-    setLastResetDate(null);
-    localStorage.removeItem("lastResetDate");
-  } else {
-    const remaining = RESET_INTERVAL - timeDiff;
-    updateTimeRemaining(remaining);
-  }
-};
+    if (timeDiff >= RESET_INTERVAL) {
+      setResizeCount(0);
+      localStorage.setItem("resizeCount", "0");
+      setTimeRemaining('');
+      setLastResetDate(null);
+      localStorage.removeItem("lastResetDate");
+    } else {
+      const remaining = RESET_INTERVAL - timeDiff;
+      updateTimeRemaining(remaining);
+    }
+  }, [RESET_INTERVAL, MAX_FREE_RESIZES]);
 
   // Update time remaining display
   const updateTimeRemaining = (milliseconds) => {
@@ -84,10 +84,21 @@ const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
     }
   };
 
+  // Check login status and load data
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      setIsLoggedIn(true);
+      loadResizeData();
+    }
+  }, [loadResizeData]);
+
   // Timer to update time remaining - ONLY when limit is reached
   useEffect(() => {
+    let timer = null;
+    
     if (isLoggedIn && lastResetDate && resizeCount >= MAX_FREE_RESIZES) {
-      const timer = setInterval(() => {
+      timer = setInterval(() => {
         const now = new Date();
         const timeDiff = now.getTime() - lastResetDate.getTime();
         
@@ -95,65 +106,54 @@ const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
           // Reset count
           setResizeCount(0);
           localStorage.setItem("resizeCount", "0");
-          setLastResetDate(now);
-          localStorage.setItem("lastResetDate", now.getTime().toString());
-          setCanReset(true);
-          setShowLimitMessage(false);
+          const newDate = new Date();
+          setLastResetDate(newDate);
+          localStorage.setItem("lastResetDate", newDate.getTime().toString());
           setTimeRemaining('');
           clearInterval(timer);
         } else {
           const remaining = RESET_INTERVAL - timeDiff;
           updateTimeRemaining(remaining);
-          setShowLimitMessage(true);
         }
       }, 1000);
-      
-      return () => clearInterval(timer);
     } else {
       // Hide timer when resets are available
       setTimeRemaining('');
     }
-  }, [isLoggedIn, lastResetDate, resizeCount]);
+    
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [isLoggedIn, lastResetDate, resizeCount, RESET_INTERVAL, MAX_FREE_RESIZES]);
 
-  const checkResizeLimit = () => {
+  const checkResizeLimit = useCallback(() => {
     if (!isLoggedIn) {
       setShowUpgradeModal(true);
       return false;
     }
     if (resizeCount >= MAX_FREE_RESIZES) {
-      setShowLimitMessage(true);
       setShowUpgradeModal(true);
       return false;
     }
     return true;
-  };
+  }, [isLoggedIn, resizeCount, MAX_FREE_RESIZES]);
 
- const incrementResizeCount = () => {
-  const newCount = resizeCount + 1;
-  setResizeCount(newCount);
-  localStorage.setItem("resizeCount", newCount.toString());
+  const incrementResizeCount = useCallback(() => {
+    const newCount = resizeCount + 1;
+    setResizeCount(newCount);
+    localStorage.setItem("resizeCount", newCount.toString());
 
-  // Start timer ONLY when limit reaches 10
-  if (newCount === MAX_FREE_RESIZES) {
-    const now = new Date();
-    setLastResetDate(now);
-    localStorage.setItem("lastResetDate", now.getTime().toString());
-    setShowLimitMessage(true);
-  }
-};
+    // Start timer ONLY when limit reaches MAX
+    if (newCount === MAX_FREE_RESIZES) {
+      const now = new Date();
+      setLastResetDate(now);
+      localStorage.setItem("lastResetDate", now.getTime().toString());
+    }
+  }, [resizeCount, MAX_FREE_RESIZES]);
 
-  const resetResizeCount = () => {
-    setResizeCount(0);
-    localStorage.setItem("resizeCount", "0");
-    const now = new Date();
-    setLastResetDate(now);
-    localStorage.setItem("lastResetDate", now.getTime().toString());
-    setCanReset(true);
-    setShowLimitMessage(false);
-    setTimeRemaining('');
-  };
-
-  const resizeImage = (file, newWidth, newHeight) => {
+  const resizeImage = useCallback((file, newWidth, newHeight) => {
     if (!checkResizeLimit()) {
       return;
     }
@@ -190,9 +190,9 @@ const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
       img.src = e.target.result;
     };
     reader.readAsDataURL(file);
-  };
+  }, [checkResizeLimit, format, quality, incrementResizeCount]);
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = useCallback((e) => {
     const file = e.target.files[0];
     if (file) {
       // Check limit before uploading
@@ -204,17 +204,17 @@ const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
       setOriginalImage(url);
       resizeImage(file, width, height);
     }
-  };
+  }, [checkResizeLimit, resizeImage, width, height]);
 
-  const handleResize = () => {
+  const handleResize = useCallback(() => {
     const fileInput = document.querySelector('input[type="file"]');
     const file = fileInput?.files[0];
     if (file) {
       resizeImage(file, width, height);
     }
-  };
+  }, [resizeImage, width, height]);
 
-  const downloadImage = () => {
+  const downloadImage = useCallback(() => {
     if (resizedImage) {
       const link = document.createElement('a');
       link.href = resizedImage;
@@ -222,12 +222,12 @@ const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
       link.download = `resized-image.${ext}`;
       link.click();
     }
-  };
+  }, [resizedImage, format]);
 
-  const handleUpgrade = (plan) => {
-    setSelectedPlan(plan);
+  const handleUpgrade = useCallback((plan) => {
+    setShowUpgradeModal(false);
     alert(`🚀 Upgrading to ${plan} plan! Redirecting to payment...`);
-  };
+  }, []);
 
   const styles = {
     container: {
@@ -625,7 +625,7 @@ const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
   };
 
   // Render Upgrade Modal
-  const renderUpgradeModal = () => {
+  const renderUpgradeModal = useCallback(() => {
     const remaining = MAX_FREE_RESIZES - resizeCount;
 
     return (
@@ -731,7 +731,7 @@ const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
               <div style={styles.pricingPrice}>₨ 0</div>
               <div style={styles.pricingPriceSub}>Forever</div>
               <div style={styles.pricingFeature}>📸 10 free resizes</div>
-              <div style={styles.pricingFeature}>🔄 Resets after 60 seconds</div>
+              <div style={styles.pricingFeature}>🔄 Resets after 24 hours</div>
               <div style={styles.pricingFeature}>🖼️ Standard quality</div>
               <div style={styles.pricingFeature}>📁 Basic formats</div>
               {!isLoggedIn ? (
@@ -855,7 +855,7 @@ const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
         </div>
       </div>
     );
-  };
+  }, [isLoggedIn, resizeCount, timeRemaining, MAX_FREE_RESIZES, handleUpgrade, styles]);
 
   return (
     <div style={styles.container}>

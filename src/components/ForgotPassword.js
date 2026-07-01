@@ -1,10 +1,11 @@
 // src/components/ForgotPassword.js
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { auth, sendPasswordResetEmail } from "./firebase/Firebase";
 
 const ForgotPassword = () => {
-  const navigate = useNavigate();
+  // Remove unused navigate
+  // const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
