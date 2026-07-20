@@ -10,6 +10,7 @@ import SignUp from "./components/SignUp";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import Footer from "./components/Footer";
+import PaymentCheckout from "./components/PaymentCheckout";
 
 const App = () => {
   return (
@@ -23,8 +24,10 @@ const App = () => {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/payment-checkout" element={<PaymentCheckout />} />
+
       </Routes>
-      <Footer/>
+      <Footer />
     </BrowserRouter>
   );
 };

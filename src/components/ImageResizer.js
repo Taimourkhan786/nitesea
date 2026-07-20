@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ImageResizer = () => {
+    const navigate=useNavigate()
+
   const [originalImage, setOriginalImage] = useState(null);
   const [resizedImage, setResizedImage] = useState(null);
   const [width, setWidth] = useState(500);
@@ -16,6 +19,11 @@ const ImageResizer = () => {
 
   const MAX_FREE_RESIZES = 10;
   const RESET_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
+
+const navigatingCheckout=()=>{
+  navigate("/payment-checkout")
+}
+
 
   // Update time remaining display
   const updateTimeRemaining = useCallback((milliseconds) => {
@@ -929,7 +937,6 @@ const ImageResizer = () => {
             <span>⏰ Next reset in: <strong>{timeRemaining || '0s'}</strong></span>
             <span 
               style={{...styles.upgradeLink, padding: '6px 16px', fontSize: '13px'}}
-              onClick={() => setShowUpgradeModal(true)}
               onMouseEnter={(e) => {
                 Object.assign(e.target.style, styles.upgradeLinkHover);
               }}
@@ -940,7 +947,7 @@ const ImageResizer = () => {
                 });
               }}
             >
-              🚀 Upgrade Now
+             <button onClick={navigatingCheckout}>🚀 Upgrade </button> 
             </span>
           </div>
         )}
