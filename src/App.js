@@ -11,6 +11,8 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import Footer from "./components/Footer";
 import PaymentCheckout from "./components/PaymentCheckout";
+import PaymentSuccess from "./components/PaymentSuccess";
+import PaymentFail from "./components/PaymentFail";
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/payment-checkout" element={<PaymentCheckout />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="payment-failure" element={<PaymentFail />} />
 
       </Routes>
       <Footer />

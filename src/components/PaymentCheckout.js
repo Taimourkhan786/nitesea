@@ -1,74 +1,68 @@
-import React, { useState } from "react";
+import axios from "axios";
+import { useState } from "react";
 
-export default function PaymentCheckout() {
+export default function Checkout() {
   const [loading, setLoading] = useState(false);
 
-  const paymentData = {
-    amount: 100, // PKR
-    customerName: "John Doe",
-    customerEmail: "john@example.com",
-    customerMobile: "03001234567",
-  };
-
-  const handlePayment = async () => {
+  const payNow = async () => {
     try {
       setLoading(true);
 
-      const response = await fetch("http://localhost:5000/api/jazzcash/payment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(paymentData),
+      const { data } = await axios.post(
+        "http://localhost:5000/create-payment",
+        {
+          amount: 1,
+        }
+      );
+
+      const form = document.createElement("form");
+
+      form.method = "POST";
+      form.action =
+        "https://ipguat.apps.net.pk/Ecommerce/api/Transaction/PostTransaction";
+
+      const fields = {
+        MERCHANT_ID: "14833",
+        MERCHANT_NAME: "Nitesea",
+        TOKEN: data.token,
+        PROCCODE: "00",
+        TXNAMT: data.amount,
+        CUSTOMER_MOBILE_NO: "03001234567",
+        CUSTOMER_EMAIL_ADDRESS: "customer@test.com",
+        SIGNATURE: "NITESEA123",
+        VERSION: "MERCHANT_CART-0.1",
+        TXNDESC: "Shopping Payment",
+        SUCCESS_URL: "http://localhost:5000/payment-success",
+        FAILURE_URL: "http://localhost:5000/payment-failure",
+        CHECKOUT_URL: "http://localhost:5000/ipn",
+        BASKET_ID: data.basketId,
+        ORDER_DATE: new Date()
+          .toISOString()
+          .slice(0, 19)
+          .replace("T", " "),
+        CURRENCY_CODE: "PKR",
+        TRAN_TYPE: "ECOMM_PURCHASE",
+      };
+
+      Object.keys(fields).forEach((key) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = fields[key];
+        form.appendChild(input);
       });
 
-      const data = await response.json();
-
-      if (data.success) {
-        // Redirect user to JazzCash Payment Page
-        window.location.href = data.paymentUrl;
-      } else {
-        alert(data.message || "Payment initialization failed.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong.");
-    } finally {
+      document.body.appendChild(form);
+      form.submit();
+    } catch (err) {
+      console.log(err);
       setLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "400px",
-        margin: "50px auto",
-        padding: "20px",
-        border: "1px solid #ddd",
-        borderRadius: "10px",
-      }}
-    >
-      <h2>JazzCash Checkout</h2>
-
-      <p>
-        <strong>Amount:</strong> PKR {paymentData.amount}
-      </p>
-
-      <button
-        onClick={handlePayment}
-        disabled={loading}
-        style={{
-          width: "100%",
-          padding: "12px",
-          background: "#8a1538",
-          color: "#fff",
-          border: "none",
-          borderRadius: "6px",
-          cursor: "pointer",
-        }}
-      >
-        {loading ? "Processing..." : "Pay with JazzCash"}
-      </button>
-    </div>
+    <button onClick={payNow} disabled={loading}>
+      {loading ? "Processing..." : "Pay Now"}
+    </button>
   );
 }
