@@ -9,7 +9,7 @@ export default function Checkout() {
       setLoading(true);
 
       const { data } = await axios.post(
-        "http://localhost:5000/create-payment",
+        "https://api.nitesea.com/create-payment",
         {
           amount: 1,
         }
@@ -32,9 +32,9 @@ export default function Checkout() {
         SIGNATURE: "NITESEA123",
         VERSION: "MERCHANT_CART-0.1",
         TXNDESC: "Shopping Payment",
-        SUCCESS_URL: "http://localhost:5000/payment-success",
-        FAILURE_URL: "http://localhost:5000/payment-failure",
-        CHECKOUT_URL: "http://localhost:5000/ipn",
+        SUCCESS_URL: "https://api.nitesea.com/payment-success",
+        FAILURE_URL: "https://api.nitesea.com/payment-failure",
+        CHECKOUT_URL: "https://api.nitesea.com/ipn",
         BASKET_ID: data.basketId,
         ORDER_DATE: new Date()
           .toISOString()
